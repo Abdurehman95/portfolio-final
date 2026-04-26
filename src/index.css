@@ -1,0 +1,1275 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #0ea5e9;
+  --secondary: #7e22ce;
+  --dark: #0f172a;
+  --darker: #020617;
+  --light: #f8fafc;
+  --text-dark: #1e293b;
+  --text-light: #e2e8f0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--dark);
+  color: var(--text-light);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light Mode Styles */
+body.light-mode {
+  background-color: #ffffff;
+  color: var(--text-dark);
+}
+
+body.light-mode .bg-dark {
+  background-color: #f1f5f9 !important;
+}
+
+body.light-mode .bg-darker {
+  background-color: #e2e8f0 !important;
+}
+
+body.light-mode .text-slate-400,
+body.light-mode .text-slate-300 {
+  color: #475569 !important;
+}
+
+body.light-mode .text-slate-200 {
+  color: #1e293b !important;
+}
+
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode h3,
+body.light-mode h4,
+body.light-mode h5,
+body.light-mode h6 {
+  color: var(--text-dark) !important;
+}
+
+body.light-mode p,
+body.light-mode span,
+body.light-mode div {
+  color: inherit;
+}
+
+body.light-mode .bg-slate-800 {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0;
+}
+
+body.light-mode .bg-slate-700 {
+  background-color: #f1f5f9 !important;
+  color: var(--text-dark) !important;
+}
+
+body.light-mode .project-card {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .code-editor {
+  background-color: #1e293b !important;
+}
+
+body.light-mode .code-editor-header {
+  background-color: #334155 !important;
+}
+
+body.light-mode .code-editor-body {
+  background-color: #1e293b !important;
+}
+
+body.light-mode .nav-link {
+  color: #475569 !important;
+}
+
+body.light-mode .nav-link:hover,
+body.light-mode .nav-link.active {
+  color: var(--primary) !important;
+}
+
+body.light-mode nav {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .contact-input {
+  background-color: #f1f5f9 !important;
+  color: var(--text-dark) !important;
+  border: 1px solid #cbd5e1;
+}
+
+/* Ensure social icons remain visible in light mode (bg becomes light) */
+body.light-mode .social-icon {
+  background-color: #ffffff !important;
+  color: var(--text-dark) !important;
+  border: 1px solid #e2e8f0;
+}
+
+body.light-mode .social-icon i {
+  color: var(--text-dark) !important;
+}
+
+body.light-mode .skill-bar {
+  background-color: #e2e8f0 !important;
+}
+
+body.light-mode .timeline-line {
+  background-color: #cbd5e1 !important;
+}
+
+body.light-mode .timeline-item::before {
+  background-color: #94a3b8 !important;
+}
+
+body.light-mode footer {
+  background-color: #f8fafc !important;
+  border-top: 1px solid #e2e8f0;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #0ea5e9, #7e22ce);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
+}
+
+/* Navigation Styles */
+.nav-link {
+  position: relative;
+  color: var(--text-light);
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--primary);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  width: 60px;
+  height: 30px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 30px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-slider {
+  width: 26px;
+  height: 26px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.light-mode .theme-toggle-slider {
+  transform: translateX(30px);
+}
+
+/* Hero Section */
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  min-height: 80px;
+}
+
+.typing-text {
+  color: var(--primary);
+}
+
+.cursor {
+  display: inline-block;
+  width: 3px;
+  height: 2.5rem;
+  background-color: var(--primary);
+  margin-left: 5px;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.pulse-animation {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Code Editor Styles */
+.code-editor {
+  background-color: #1e293b;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.code-editor-header {
+  background-color: #334155;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.code-editor-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot-red {
+  background-color: #ef4444;
+}
+
+.dot-yellow {
+  background-color: #f59e0b;
+}
+
+.dot-green {
+  background-color: #10b981;
+}
+
+.code-editor-title {
+  color: #94a3b8;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.code-editor-body {
+  padding: 20px;
+  background-color: #1e293b;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.code-line {
+  display: flex;
+  gap: 20px;
+}
+
+.line-number {
+  color: #475569;
+  user-select: none;
+  min-width: 30px;
+  text-align: right;
+}
+
+.line-content {
+  color: #e2e8f0;
+}
+
+.keyword {
+  color: #c678dd;
+}
+
+.string {
+  color: #98c379;
+}
+
+.function {
+  color: #61afef;
+}
+
+.punctuation {
+  color: #abb2bf;
+}
+
+.jsx-tag {
+  color: #e06c75;
+}
+
+.property {
+  color: #d19a66;
+}
+
+/* Skills Section */
+.skill-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.skill-progress {
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 10px;
+  transition: width 1.5s ease-out;
+}
+
+/* Timeline Styles */
+.timeline-container {
+  position: relative;
+  padding: 20px 0;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 50px;
+  width: calc(50% - 30px);
+}
+
+.timeline-item:nth-child(odd) {
+  margin-left: auto;
+  padding-left: 30px;
+}
+
+.timeline-item:nth-child(even) {
+  margin-right: auto;
+  padding-right: 30px;
+  text-align: right;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  top: 0;
+  border: 3px solid var(--dark);
+}
+
+.timeline-item:nth-child(odd)::before {
+  left: -8px;
+}
+
+.timeline-item:nth-child(even)::before {
+  right: -8px;
+}
+
+.timeline-content {
+  background-color: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+body.light-mode .timeline-content {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.timeline-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(14, 165, 233, 0.2);
+}
+
+/* Project Card */
+.project-card {
+  background-color: #1e293b;
+  transition: all 0.3s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
+}
+
+/* Contact Form */
+.contact-input {
+  background-color: #1e293b;
+  border: 2px solid transparent;
+  color: var(--text-light);
+  transition: all 0.3s ease;
+}
+
+.contact-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+/* Social Icons */
+.social-icon {
+  transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: translateY(-3px);
+  color: var(--primary) !important;
+}
+
+/* Card Hover Effect */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(14, 165, 233, 0.2);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.fade-in-left {
+  animation: fadeInLeft 0.8s ease forwards;
+}
+
+.fade-in-right {
+  animation: fadeInRight 0.8s ease forwards;
+}
+
+.scale-in {
+  animation: scaleIn 0.8s ease forwards;
+}
+
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .timeline-line {
+    left: 20px;
+  }
+
+  .timeline-item {
+    width: calc(100% - 50px);
+    margin-left: 50px !important;
+    padding-left: 30px !important;
+    padding-right: 0 !important;
+    text-align: left !important;
+  }
+
+  .timeline-item::before {
+    left: -39px !important;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .cursor {
+    height: 2rem;
+  }
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+section {
+  scroll-margin-top: 80px;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--darker);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* MAIN EDITOR */
+.code-editor {
+  background: #1e1e1e !important;
+  color: #ffffff !important;
+  font-family: "Fira Code", monospace !important;
+  border: 1px solid #333 !important;
+  border-radius: 10px !important;
+}
+
+/* HEADER */
+.code-editor-header {
+  background: #2d2d2d !important;
+  color: #ccc !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px !important;
+}
+
+.code-editor-dots .dot {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  display: inline-block;
+  margin-right: 5px !important;
+}
+
+.dot-red {
+  background: #ff5f56 !important;
+}
+
+.dot-yellow {
+  background: #ffbd2e !important;
+}
+
+.dot-green {
+  background: #27c93f !important;
+}
+
+/* BODY */
+.code-editor-body {
+  padding: 15px !important;
+}
+
+/* LINES */
+.code-line {
+  display: flex !important;
+  font-size: 15px !important;
+}
+
+.line-number {
+  width: 30px !important;
+  color: #636363 !important;
+  user-select: none !important;
+}
+
+.line-content {
+  white-space: pre !important;
+}
+
+/* SYNTAX COLORS */
+.code-editor .keyword {
+  color: #569cd6 !important;
+  /* blue */
+}
+
+.code-editor .string {
+  color: #ce9178 !important;
+  /* brown */
+}
+
+.code-editor .function {
+  color: #dcdcaa !important;
+  /* yellow */
+}
+
+.code-editor .property {
+  color: #9cdcfe !important;
+  /* light blue */
+}
+
+.code-editor .jsx-tag {
+  color: #4ec9b0 !important;
+  /* aqua */
+}
+
+.code-editor .punctuation {
+  color: #c8c8c8 !important;
+  /* grey */
+}
+
+/* ============================================
+   NEW INTERACTIVE ANIMATIONS
+   ============================================ */
+
+/* 1. Three.js Code Editor Wrapper */
+.code-editor-three-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.code-editor-three-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.code-editor-three-wrapper:hover .code-editor-three-bg {
+  opacity: 1;
+}
+
+.code-editor-three-wrapper .code-editor {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.code-editor-three-wrapper:hover .code-editor {
+  transform: scale(1.02);
+  box-shadow: 0 25px 70px rgba(14, 165, 233, 0.4);
+}
+
+/* 2. Tool Icon 360 Rotation on Hover */
+.tool-icon-card {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: var(--darker);
+}
+
+.tool-icon-rotate {
+  transition: transform 0.6s ease;
+  display: inline-block;
+}
+
+.tool-icon-card:hover .tool-icon-rotate {
+  transform: rotate(360deg);
+}
+
+.tool-icon-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(14, 165, 233, 0.3);
+  background-color: #1e293b;
+}
+
+/* Neon Skill Bars (Technical Skills) */
+.skill-bar-neon-container {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  position: relative;
+  margin-top: 10px;
+}
+
+.skill-bar-neon-progress {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #0ea5e9, #7e22ce);
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.5), 0 0 20px rgba(126, 34, 206, 0.3);
+  width: 0;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Infinite Hover Animation Line */
+.skill-bar-neon-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Trigger animation on hover of the skill item */
+.skill-item:hover .skill-bar-neon-progress::after {
+  opacity: 1;
+  animation: shine 1.5s infinite linear;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Professional Skill Circles */
+.circular-progress-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Subtle Rotating Highlight on Hover */
+.circular-progress-container::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, #0ea5e9, #7e22ce, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 2px));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 2px));
+  pointer-events: none;
+}
+
+.circular-progress-container:hover::before {
+  opacity: 1;
+  animation: rotateHighlight 2s linear infinite;
+}
+
+@keyframes rotateHighlight {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.circular-progress-svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  position: relative;
+  z-index: 2;
+}
+
+.circular-progress-circle-bg {
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 6;
+  fill: none;
+}
+
+.circular-progress-circle {
+  stroke-width: 6;
+  stroke-dasharray: 251;
+  stroke-dashoffset: 251;
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 5px rgba(14, 165, 233, 0.5));
+}
+
+.circular-progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-light);
+}
+
+body.light-mode .circular-progress-text {
+  color: var(--text-dark);
+}
+
+body.light-mode .circular-progress-circle-bg {
+  stroke: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .skill-bar-neon-container {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Cleaned up duplicate blocks */
+
+/* Dotted Curve Decoration */
+.dotted-curve {
+  position: absolute;
+  top: 20px;
+  left: -20px;
+  width: 30px;
+  height: 90%;
+  border-left: 4px dotted rgba(14, 165, 233, 0.3);
+  border-bottom: 4px dotted rgba(126, 34, 206, 0.3);
+  border-bottom-left-radius: 30px;
+  opacity: 0.5;
+  border-image-source: linear-gradient(to bottom, #0ea5e9, #7e22ce);
+  border-image-slice: 1;
+}
+
+/* 3. Service Card Hover Animations */
+.service-card {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(126, 34, 206, 0.15));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+
+.service-card:hover {
+  transform: translateY(-12px) scale(1.04);
+  box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.5);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.service-card:hover::before {
+  opacity: 1;
+}
+
+.service-card i {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-block;
+}
+
+.service-card:hover i {
+  transform: scale(1.2) rotate(10deg);
+}
+
+.service-card>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* Linux Icon Visibility */
+.text-linux {
+  color: #ffffff;
+}
+
+body.light-mode .text-linux {
+  color: #333333;
+}
+
+/* 4. Main Content Padding for Router Pages */
+.main-content {
+  min-height: 100vh;
+  padding-top: 0;
+}
+
+/* 5. Page Transitions */
+.home-page,
+.about-page,
+.skills-page,
+.projects-page,
+.contact-page {
+  animation: pageEnter 0.5s ease;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 6. Responsive Enhancements for Service Cards */
+@media (max-width: 1024px) {
+  .service-card {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .tool-icon-card {
+    padding: 1rem !important;
+  }
+
+  .tool-icon-rotate {
+    font-size: 2.5rem !important;
+  }
+}
+
+/* 3. Service Card 3D Flip Animation */
+.service-card-flip {
+  perspective: 1000px;
+}
+
+.service-card-inner {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.service-card-flip:hover .service-card-inner {
+  transform: rotateY(180deg);
+}
+
+.service-card-front,
+.service-card-back {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.service-card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+}
+
+/* Add a subtle glow on flip */
+.service-card-flip:hover .service-card-back {
+  box-shadow: 0 0 25px rgba(14, 165, 233, 0.3);
+}
+
+/* Adjustments for Light Mode */
+body.light-mode .service-card-front {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+}
+
+body.light-mode .service-card-back {
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-color: #cbd5e1;
+}
+
+body.light-mode .service-card-back p {
+  color: #334155;
+}
+
+body.light-mode .tool-icon-card {
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .tool-icon-card:hover {
+  box-shadow: 0 15px 40px rgba(14, 165, 233, 0.25);
+}
+
+/* 8. Smooth Transitions for All Interactive Elements */
+* {
+  transition-property: background-color, color, border-color, transform, box-shadow, opacity;
+}
+
+/* 9. Performance Optimization */
+.code-editor-three-bg canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 10. Additional Polish */
+.service-card i {
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover i {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* 3D Tilt & Project Card Styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.project-card-container {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.black-gradient {
+  background: #111111;
+  background: -webkit-linear-gradient(to right, #434343, #000000);
+  background: linear-gradient(to right, #434343, #000000);
+}
+
+.text-blue-text {
+  color: #20d1e3 !important;
+}
+
+.text-green-text {
+  color: #56e39f !important;
+}
+
+.text-pink-text {
+  color: #f43f5e !important;
+}
+
+.text-secondary {
+  color: #94a3b8;
+}
+
+.card-img_hover {
+  z-index: 10;
+}
+
+/* Toolkit Marquee Styles */
+.toolkit-marquee-container {
+  overflow: hidden;
+  padding: 2rem 0;
+  position: relative;
+  width: 100%;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+.toolkit-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1.5rem;
+  padding: 0.5rem;
+}
+
+.scroll-left {
+  animation: scroll-left 50s linear infinite;
+}
+
+.scroll-right {
+  animation: scroll-right 50s linear infinite;
+}
+
+.toolkit-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.tool-card-premium {
+  flex: 0 0 auto;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
+}
+
+.tool-card-premium:hover {
+  transform: translateY(-10px) scale(1.05);
+  background: rgba(30, 41, 59, 0.8);
+  border-color: var(--primary);
+  box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.5);
+}
+
+.tool-card-premium i {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  transition: transform 0.6s ease;
+}
+
+.tool-card-premium:hover i {
+  transform: rotate(360deg);
+}
+
+/* Light mode adjustments */
+body.light-mode .tool-card-premium {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: var(--text-dark);
+}
+
+body.light-mode .tool-card-premium:hover {
+  background: #ffffff;
+  box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.3);
+}
+
+body.light-mode .toolkit-marquee-container {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    white 10%,
+    white 90%,
+    transparent
+  );
+}
