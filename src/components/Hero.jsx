@@ -9,16 +9,16 @@ const Hero = () => {
   const [typingSpeed, setTypingSpeed] = useState(100);
   const canvasRef = useRef(null);
 
-  const texts = [
-    'Fullstack Developer',
-    'UI/UX Designer',
-    'React Specialist',
-    'Web Developer',
-    'Problem Solver'
-  ];
-
   // Typing Effect
   useEffect(() => {
+    const texts = [
+      'Fullstack Developer',
+      'UI/UX Designer',
+      'React Specialist',
+      'Web Developer',
+      'Problem Solver'
+    ];
+    
     let timer;
     const handleType = () => {
       const i = loopNum % texts.length;
@@ -43,7 +43,7 @@ const Hero = () => {
 
     timer = setTimeout(handleType, typingSpeed);
     return () => clearTimeout(timer);
-  }, [text, isDeleting, loopNum, typingSpeed, texts]);
+  }, [text, isDeleting, loopNum, typingSpeed]);
 
   // Icon Particle Animation
   useEffect(() => {

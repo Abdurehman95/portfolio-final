@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0 text-center md:text-left">
-            <a href="#" className="text-2xl font-bold gradient-text">Portfolio</a>
+            <a href="/" className="text-2xl font-bold gradient-text">Portfolio</a>
             <p className="text-slate-400 mt-2">© 2023 Abdurehman Seid. All rights reserved.</p>
           </div>
           

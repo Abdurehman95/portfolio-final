@@ -157,7 +157,7 @@ const Projects = () => {
         </div>
 
         <div className="text-center mt-12 fade-in-up">
-          <a href="#" className="px-8 py-4 rounded-full btn-primary font-medium inline-flex items-center gap-3">
+          <a href="https://github.com/Abdurehman95" className="px-8 py-4 rounded-full btn-primary font-medium inline-flex items-center gap-3">
             View All Projects <i className="fas fa-arrow-right"></i>
           </a>
         </div>
