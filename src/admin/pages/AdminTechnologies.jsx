@@ -37,13 +37,15 @@ export default function AdminTechnologies() {
 
   const fetchTechs = async () => {
     const { data } = await supabase.from('technologies').select('*').order('id', { ascending: true });
-    if (data) {
+    if (data && data.length > 0) {
       const grouped = data.reduce((acc, tech) => {
         if (!acc[tech.category]) acc[tech.category] = [];
         acc[tech.category].push(tech);
         return acc;
       }, {});
       setCategories(grouped);
+    } else {
+      setCategories(initialTechs);
     }
   };
 
