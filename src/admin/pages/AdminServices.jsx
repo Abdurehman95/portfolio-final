@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 
 const initialServices = [
-  { id: 1, icon: 'code', title: 'Web Development', description: 'Custom, responsive websites built with modern frameworks. Focus on performance, accessibility, and scalable architecture.', tags: ['React', 'Tailwind'], color: 'primary', active: true },
-  { id: 2, icon: 'design_services', title: 'UI/UX Design', description: 'Intuitive and engaging user interfaces. Wireframing, prototyping, and high-fidelity visual design tailored to user needs.', tags: ['Figma', 'Prototyping'], color: 'secondary', active: true },
-  { id: 3, icon: 'api', title: 'API Integration', description: 'Seamless connection of third-party services and custom backend development. Secure and efficient data flow across systems.', tags: ['REST', 'GraphQL'], color: 'tertiary', active: true },
+  { id: 1, icon: 'code', title: 'Fullstack Web Development', description: 'Building scalable, responsive, and secure web applications using React, Node.js, and modern architectural patterns.', tags: ['React', 'Node.js'], color: 'primary', active: true, image: '/portfolio-image.png' },
+  { id: 2, icon: 'design_services', title: 'UI/UX Design', description: 'Crafting intuitive and engaging user interfaces with a focus on user experience, accessibility, and modern aesthetics.', tags: ['Figma', 'CSS3'], color: 'secondary', active: true, image: '/tms.png' },
+  { id: 3, icon: 'api', title: 'API Development & Integration', description: 'Designing robust RESTful and GraphQL APIs, and seamlessly integrating third-party services for complex web ecosystems.', tags: ['REST', 'GraphQL'], color: 'tertiary', active: true, image: '/image.png' },
 ];
 
 const defaultForm = { icon: 'code', title: '', description: '', tags: '', color: 'primary', active: true };
@@ -23,7 +23,11 @@ export default function AdminServices() {
 
   const fetchServices = async () => {
     const { data } = await supabase.from('services').select('*').order('id', { ascending: true });
-    if (data) setServices(data);
+    if (data && data.length > 0) {
+      setServices(data);
+    } else {
+      setServices(initialServices);
+    }
   };
 
   const openAdd = () => { setForm(defaultForm); setEditItem(null); setShowModal(true); };
@@ -41,9 +45,9 @@ export default function AdminServices() {
 
   const handleSaveService = async () => {
     const tagsArray = form.tags.split(',').map(t => t.trim()).filter(Boolean);
-    const payload = { 
-      icon: form.icon, title: form.title, description: form.description, 
-      tags: tagsArray, color: form.color, active: form.active 
+    const payload = {
+      icon: form.icon, title: form.title, description: form.description,
+      tags: tagsArray, color: form.color, active: form.active
     };
 
     if (editItem) {
@@ -51,7 +55,7 @@ export default function AdminServices() {
     } else {
       await supabase.from('services').insert([payload]);
     }
-    
+
     await fetchServices();
     closeModal();
     setSaved(true);
