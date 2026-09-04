@@ -18,7 +18,7 @@ const Hero = () => {
       'Web Developer',
       'Problem Solver'
     ];
-    
+
     let timer;
     const handleType = () => {
       const i = loopNum % texts.length;
