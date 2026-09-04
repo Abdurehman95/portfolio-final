@@ -704,6 +704,8 @@
   margin: 0 0 24px;
   max-width: 320px;
   line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Toasts */
@@ -1932,6 +1934,10 @@
   font-size: 12px;
   color: var(--clr-on-surface-variant);
   margin: 0;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .admin-table__secondary {
