@@ -29,7 +29,11 @@ export default function AdminSkills() {
 
   const fetchSkills = async () => {
     const { data } = await supabase.from('skills').select('*').order('id', { ascending: true });
-    if (data) setSkills(data);
+    if (data && data.length > 0) {
+      setSkills(data);
+    } else {
+      setSkills(initialSkills);
+    }
   };
 
   const filtered = filter === 'All' ? skills : skills.filter(s => s.category === filter);
@@ -44,9 +48,9 @@ export default function AdminSkills() {
   };
 
   const handleSave = async () => {
-    const payload = { 
-      name: form.name, category: form.category, proficiency: form.proficiency, 
-      icon: form.icon, color: form.color, active: form.active 
+    const payload = {
+      name: form.name, category: form.category, proficiency: form.proficiency,
+      icon: form.icon, color: form.color, active: form.active
     };
 
     if (editItem) {
@@ -54,17 +58,17 @@ export default function AdminSkills() {
     } else {
       await supabase.from('skills').insert([payload]);
     }
-    
+
     await fetchSkills();
     closeModal();
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
 
-  const handleDelete = async (id) => { 
+  const handleDelete = async (id) => {
     await supabase.from('skills').delete().eq('id', id);
     await fetchSkills();
-    setDeleteConfirm(null); 
+    setDeleteConfirm(null);
   };
 
   return (
