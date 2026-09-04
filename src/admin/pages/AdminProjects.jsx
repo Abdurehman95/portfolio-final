@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 
 const initialProjects = [
-  { id: 1, title: 'Efoy Money', subtitle: 'Fintech Application', category: 'Mobile', status: 'Published', featured: true, image: '' },
-  { id: 2, title: 'Tourism App', subtitle: 'Travel & Booking Platform', category: 'Web', status: 'Published', featured: false, image: '' },
-  { id: 3, title: 'AI Project', subtitle: 'Machine Learning Model', category: 'AI', status: 'Draft', featured: false, image: '' },
+  { id: 1, title: 'Tourism management system', subtitle: 'Productivity App', category: 'Web', status: 'Published', featured: true, image: '/tms.png', description: 'A productivity app for managing tourism and developing nation.', github_url: 'https://github.com/Abdurehman95/TOURISM-MANAGEMENT-SYSSTEM-UPDATED', live_url: '#', technologies: 'React, php, TailwindCSS' },
+  { id: 2, title: 'Portfolio Website', subtitle: 'Personal Portfolio', category: 'Web', status: 'Published', featured: true, image: '/portfolio.png', description: 'A responsive portfolio website built with modern design principles.', github_url: 'https://github.com/Abdurehman95/react-portfolio-final', live_url: 'https://abdurex.vercel.app/', technologies: 'CSS3, React' },
+  { id: 3, title: 'E-commerce Platform', subtitle: 'Online Store', category: 'Web', status: 'Draft', featured: false, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1470&q=80', description: 'A full-featured e-commerce platform built with React, Node.js, and MongoDB.', github_url: '#', live_url: '#', technologies: 'React, Node.js, MongoDB' },
 ];
 
 const defaultForm = {
@@ -35,7 +35,11 @@ export default function AdminProjects() {
 
   const fetchProjects = async () => {
     const { data } = await supabase.from('projects').select('*').order('id', { ascending: true });
-    if (data) setProjects(data);
+    if (data && data.length > 0) {
+      setProjects(data);
+    } else {
+      setProjects(initialProjects);
+    }
   };
 
   const filtered = projects
