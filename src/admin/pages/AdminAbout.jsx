@@ -3,18 +3,26 @@ import { supabase } from '../../supabaseClient';
 
 const initialState = {
   heading: 'About Me',
-  description: `I am a passionate Full-Stack Developer with a deep interest in crafting high-performance web applications and immersive digital experiences.\n\nMy journey started 5 years ago, tinkering with basic HTML & CSS, and has evolved into building scalable microservices and complex front-end architectures. I believe in clean code, user-centric design, and continuous learning.\n\nCurrently, I specialize in:\n• React, Vue, and Next.js\n• Node.js, Python, and Go\n• Cloud Infrastructure (AWS & Vercel)\n• UI/UX Engineering and Design Systems`,
-  yearsExperience: 5,
-  projectsCompleted: 124,
-  clients: 89,
-  altText: 'Portrait of Abdurex in a modern workspace',
+  description: `I'm a passionate Full Stack Developer with over 3 years of experience creating modern web applications.
+I specialize in JavaScript ecosystems including React, Node.js, and modern CSS frameworks.
+
+Name: Abdurehman Seid
+Email: abdurehmanseid@gmail.com
+Phone: +251967192079
+Experience: 3+ Years
+Location: Ethiopia, Woldia`,
+  yearsExperience: 3,
+  projectsCompleted: 15,
+  clients: 10,
+  altText: 'Portrait of Abdurehman',
   showImage: true,
+  about_image: '/image.png',
 };
 
 export default function AdminAbout() {
   const [form, setForm] = useState(initialState);
   const [saved, setSaved] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(initialState.about_image);
   const [previewMode, setPreviewMode] = useState('desktop');
 
   useEffect(() => {
@@ -34,6 +42,9 @@ export default function AdminAbout() {
         showImage: data.show_image ?? true,
       });
       if (data.about_image) setImagePreview(data.about_image);
+    } else {
+      setForm(initialState);
+      setImagePreview(initialState.about_image);
     }
   };
 
@@ -86,7 +97,7 @@ export default function AdminAbout() {
           <h2 className="admin-page__title">Edit 'About Me' Section</h2>
         </div>
         <div className="admin-page__actions">
-          <button className="admin-btn admin-btn--outline" onClick={() => { setForm(initialState); setImagePreview(null); }}>
+          <button className="admin-btn admin-btn--outline" onClick={() => { setForm(initialState); setImagePreview(initialState.about_image); }}>
             <span className="material-symbols-outlined" style={{ fontSize: 16 }}>history</span>
             Discard Changes
           </button>

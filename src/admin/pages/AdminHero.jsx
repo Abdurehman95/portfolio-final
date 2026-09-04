@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';const initialState = {
-  title: 'Creative Full-Stack Developer',
-  subtitle: 'Building high-performance, immersive digital experiences. Specializing in modern web technologies and futuristic UI design.',
-  ctaText: 'View Projects',
-  ctaUrl: '#projects',
+  title: 'Hi, I\'m Abdurehman Seid',
+  subtitle: 'I build exceptional digital experiences that are fast, accessible, and visually appealing. Let\'s create something amazing together.',
+  ctaText: 'Hire Me',
+  ctaUrl: '#contact',
   secondaryCtaText: 'Download CV',
   secondaryCtaUrl: '#',
-  heroImage: '',
+  heroImage: '/image.png',
 };
 
 export default function AdminHero() {
   const [form, setForm] = useState(initialState);
   const [saved, setSaved] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(initialState.heroImage);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,9 +36,13 @@ export default function AdminHero() {
           ctaUrl: data.cta_url || '',
           secondaryCtaText: data.secondary_cta_text || '',
           secondaryCtaUrl: data.secondary_cta_url || '',
-          heroImage: data.hero_image || '',
+          heroImage: data.hero_image || initialState.heroImage,
         });
         if (data.hero_image) setImagePreview(data.hero_image);
+      } else {
+        // Fallback to initial state if no data in DB
+        setForm(initialState);
+        setImagePreview(initialState.heroImage);
       }
     } catch (err) {
       console.error('Error:', err);
@@ -93,7 +97,7 @@ export default function AdminHero() {
 
   const handleDiscard = () => {
     setForm(initialState);
-    setImagePreview(null);
+    setImagePreview(initialState.heroImage);
     setSaved(false);
   };
 
