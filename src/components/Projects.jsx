@@ -107,12 +107,12 @@ const Projects = () => {
       codeUrl: 'https://github.com/Abdurehman95/TOURISM-MANAGEMENT-SYSSTEM-UPDATED'
     },
     {
-      title: 'Social Media Dashboard',
-      description: 'Analytics dashboard for social media metrics with real-time updates.',
-      image: 'https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&w=1470&q=80',
-      tags: ['Next.js', 'Chart.js', 'TypeScript'],
+      title: 'Efoy Hotel and Suites',
+      description: 'A comprehensive hotel management system designed for Efoy Hotel and Suites to streamline room bookings, luxury dining, and guest services.',
+      image: '/hotel-p.png',
+      tags: ['React', 'Express', 'PostgreSQL'],
       liveUrl: '#',
-      codeUrl: '#'
+      codeUrl: 'https://github.com/Abdurehman95/Efoy-hotel.git'
     },
     {
       title: 'Weather Application',

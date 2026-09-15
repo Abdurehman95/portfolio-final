@@ -13,11 +13,6 @@ const Services = () => {
       description: 'Building cross-platform mobile applications with React Native and Flutter.'
     },
     {
-      icon: 'fas fa-paint-brush',
-      title: 'UI/UX Design',
-      description: 'Designing beautiful and intuitive user interfaces with modern design principles.'
-    },
-    {
       icon: 'fas fa-server',
       title: 'Backend Development',
       description: 'Developing robust backend systems and APIs with Node.js and databases.'
@@ -34,7 +29,7 @@ const Services = () => {
           <div className="w-20 h-1 bg-gradient-to-r from-primary to-secondary mx-auto fade-in-up stagger-1"></div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {services.map((service, index) => (
             <div key={index} className="service-card-flip h-64 scale-in" style={{ transitionDelay: `${index * 100}ms` }}>
               <div className="service-card-inner w-full h-full relative cursor-pointer">

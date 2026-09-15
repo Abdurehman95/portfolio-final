@@ -13,7 +13,6 @@ const Hero = () => {
   useEffect(() => {
     const texts = [
       'Fullstack Developer',
-      'UI/UX Designer',
       'React Specialist',
       'Web Developer',
       'Problem Solver'
