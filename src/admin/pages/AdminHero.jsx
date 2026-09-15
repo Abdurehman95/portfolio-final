@@ -13,7 +13,6 @@ export default function AdminHero() {
   const [form, setForm] = useState(initialState);
   const [saved, setSaved] = useState(false);
   const [imagePreview, setImagePreview] = useState(initialState.heroImage);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchHeroData();
@@ -46,8 +45,6 @@ export default function AdminHero() {
       }
     } catch (err) {
       console.error('Error:', err);
-    } finally {
-      setLoading(false);
     }
   };
 

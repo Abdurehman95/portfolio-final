@@ -21,7 +21,7 @@ export default function AdminLogin() {
     if (!form.password) { setError('Please enter your password.'); return; }
     setLoading(true);
     
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
+    const { error: authError } = await supabase.auth.signInWithPassword({
       email: form.email,
       password: form.password,
     });

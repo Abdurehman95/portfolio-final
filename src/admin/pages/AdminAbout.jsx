@@ -30,7 +30,7 @@ export default function AdminAbout() {
   }, []);
 
   const fetchAboutData = async () => {
-    const { data, error } = await supabase.from('about_content').select('*').single();
+    const { data } = await supabase.from('about_content').select('*').single();
     if (data) {
       setForm({
         heading: data.heading || '',

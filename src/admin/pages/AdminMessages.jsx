@@ -33,7 +33,11 @@ export default function AdminMessages() {
 
   const fetchMessages = async () => {
     const { data } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
-    if (data) setMessages(data);
+    if (data && data.length > 0) {
+      setMessages(data);
+    } else {
+      setMessages(initialMessages);
+    }
   };
 
   const unreadCount = messages.filter(m => !m.is_read).length;
