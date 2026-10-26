@@ -13,14 +13,97 @@ const Contact = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({
+    name: false,
+    email: false,
+    message: false
+  });
 
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  const validateEmail = (email, name) => {
+    const trimmed = (email || '').trim();
+    const displayName = (name || '').trim();
+    const prefix = displayName ? `${displayName}, ` : '';
+
+    if (!trimmed) {
+      return `${prefix}email address is required.`;
+    }
+
+    if (!trimmed.includes('@')) {
+      return `${prefix}your email is missing an '@' symbol (e.g. name@example.com).`;
+    }
+
+    const parts = trimmed.split('@');
+    if (parts.length > 2) {
+      return `${prefix}email address cannot contain multiple '@' symbols.`;
+    }
+
+    const [localPart, domainPart] = parts;
+    if (!localPart) {
+      return `${prefix}please enter the username part before the '@'.`;
+    }
+
+    if (!domainPart) {
+      return `${prefix}please enter a domain name after '@' (e.g. gmail.com).`;
+    }
+
+    if (!domainPart.includes('.') || domainPart.startsWith('.') || domainPart.endsWith('.')) {
+      return `${prefix}please enter a valid domain with an extension (e.g. gmail.com).`;
+    }
+
+    if (!emailPattern.test(trimmed)) {
+      return `${prefix}please enter a valid email address (e.g. name@example.com).`;
+    }
+
+    return '';
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+
+    if (name === 'email') {
+      const emailErr = validateEmail(value, formData.name);
+      setErrors((prev) => ({ ...prev, email: emailErr }));
+    } else if (name === 'name') {
+      if (value.trim().length < 3) {
+        setErrors((prev) => ({ ...prev, name: 'Name must be at least 3 characters.' }));
+      } else {
+        setErrors((prev) => ({ ...prev, name: '' }));
+      }
+      // Re-evaluate email if already touched to refresh personalized feedback
+      if (touched.email && formData.email) {
+        setErrors((prev) => ({ ...prev, email: validateEmail(formData.email, value) }));
+      }
+    } else if (name === 'message') {
+      if (value.trim().length < 10) {
+        setErrors((prev) => ({ ...prev, message: 'Message must be at least 10 characters long.' }));
+      } else {
+        setErrors((prev) => ({ ...prev, message: '' }));
+      }
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear field-specific error when user modifies value
-    if (errors[name]) {
+
+    // If the field has already been touched, validate live for instant recognition
+    if (touched[name]) {
+      if (name === 'email') {
+        const emailErr = validateEmail(value, formData.name);
+        setErrors((prev) => ({ ...prev, email: emailErr }));
+      } else if (name === 'name') {
+        if (value.trim().length >= 3) {
+          setErrors((prev) => ({ ...prev, name: '' }));
+        }
+      } else if (name === 'message') {
+        if (value.trim().length >= 10) {
+          setErrors((prev) => ({ ...prev, message: '' }));
+        }
+      }
+    } else if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
@@ -32,8 +115,9 @@ const Contact = () => {
       newErrors.name = 'Name must be at least 3 characters.';
     }
 
-    if (!emailPattern.test(formData.email.trim())) {
-      newErrors.email = 'Enter a valid email address.';
+    const emailErr = validateEmail(formData.email, formData.name);
+    if (emailErr) {
+      newErrors.email = emailErr;
     }
 
     if (formData.message.trim().length < 10) {
@@ -45,6 +129,7 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setTouched({ name: true, email: true, message: true });
     const newErrors = validate();
 
     if (Object.keys(newErrors).length > 0) {
@@ -83,6 +168,9 @@ const Contact = () => {
       setErrors({ form: 'Failed to send message. Please check your network connection.' });
     }
   };
+
+  const isEmailValid = Boolean(touched.email && !errors.email && formData.email.trim());
+  const isEmailInvalid = Boolean(touched.email && errors.email);
 
   return (
     <section id="contact" className="py-20 bg-dark">
@@ -201,31 +289,64 @@ const Contact = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     placeholder="Enter your name"
                     autoComplete="name"
                     disabled={state.submitting}
-                    className={`w-full px-4 py-3 rounded-lg contact-input focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-200 bg-slate-800 ${errors.name ? 'border border-red-500 focus:ring-red-500' : ''}`}
+                    className={`w-full px-4 py-3 rounded-lg contact-input focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-200 bg-slate-800 ${errors.name && touched.name ? 'border border-red-500 focus:ring-red-500' : ''}`}
                     required
                   />
-                  {errors.name && <p className="mt-1 text-red-400 text-sm">{errors.name}</p>}
+                  {errors.name && touched.name && <p className="mt-1 text-red-400 text-sm">{errors.name}</p>}
                   <ValidationError prefix="Name" field="name" errors={state.errors} className="mt-1 text-red-400 text-sm" />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block mb-2 font-medium">Your Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="name@example.com"
-                    autoComplete="email"
-                    disabled={state.submitting}
-                    className={`w-full px-4 py-3 rounded-lg contact-input focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-200 bg-slate-800 ${errors.email ? 'border border-red-500 focus:ring-red-500' : ''}`}
-                    required
-                  />
-                  {errors.email && <p className="mt-1 text-red-400 text-sm">{errors.email}</p>}
+                  <div className="flex items-center justify-between mb-2">
+                    <label htmlFor="email" className="font-medium">
+                      Your Email <span className="text-red-400">*</span>
+                    </label>
+                    {isEmailValid && (
+                      <span className="text-xs text-green-400 font-medium inline-flex items-center gap-1">
+                        <i className="fas fa-check-circle"></i> Valid email
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      placeholder="name@example.com"
+                      autoComplete="email"
+                      disabled={state.submitting}
+                      className={`w-full px-4 py-3 pr-10 rounded-lg contact-input focus:outline-none focus:ring-2 text-slate-200 bg-slate-800 transition-all duration-200 ${
+                        isEmailInvalid
+                          ? 'border border-red-500 focus:ring-red-500'
+                          : isEmailValid
+                          ? 'border border-green-500 focus:ring-green-500'
+                          : 'focus:ring-blue-500'
+                      }`}
+                      required
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-sm">
+                      {isEmailInvalid ? (
+                        <i className="fas fa-exclamation-circle text-red-400"></i>
+                      ) : isEmailValid ? (
+                        <i className="fas fa-check-circle text-green-400"></i>
+                      ) : (
+                        <i className="fas fa-envelope text-slate-500"></i>
+                      )}
+                    </div>
+                  </div>
+                  {isEmailInvalid && (
+                    <p className="mt-1.5 text-red-400 text-sm flex items-center gap-1.5">
+                      <i className="fas fa-info-circle text-xs"></i>
+                      <span>{errors.email}</span>
+                    </p>
+                  )}
                   <ValidationError prefix="Email" field="email" errors={state.errors} className="mt-1 text-red-400 text-sm" />
                 </div>
 
@@ -237,12 +358,13 @@ const Contact = () => {
                     rows="5"
                     value={formData.message}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     placeholder="Write your message or inquiry here..."
                     disabled={state.submitting}
-                    className={`w-full px-4 py-3 rounded-lg contact-input focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-200 bg-slate-800 ${errors.message ? 'border border-red-500 focus:ring-red-500' : ''}`}
+                    className={`w-full px-4 py-3 rounded-lg contact-input focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-200 bg-slate-800 ${errors.message && touched.message ? 'border border-red-500 focus:ring-red-500' : ''}`}
                     required
                   ></textarea>
-                  {errors.message && <p className="mt-1 text-red-400 text-sm">{errors.message}</p>}
+                  {errors.message && touched.message && <p className="mt-1 text-red-400 text-sm">{errors.message}</p>}
                   <ValidationError prefix="Message" field="message" errors={state.errors} className="mt-1 text-red-400 text-sm" />
                 </div>
 
