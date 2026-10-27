@@ -23,12 +23,12 @@ export default function AdminLayout() {
       <aside className={`admin-sidebar${mobileOpen ? ' admin-sidebar--open' : ''}`}>
         {/* Brand */}
         <div className="admin-sidebar__brand">
-          <div className="admin-sidebar__logo">
-            <span className="material-symbols-outlined">admin_panel_settings</span>
+          <div className="admin-login__logo" style={{ width: 40, height: 40 }}>
+            <span className="material-symbols-outlined" style={{ fontSize: 22, color: 'var(--clr-primary)' }}>admin_panel_settings</span>
           </div>
           <div>
-            <h1 className="admin-sidebar__title">Abdurex Port</h1>
-            <p className="admin-sidebar__subtitle">Admin Dashboard</p>
+            <h1 className="admin-sidebar__title gradient-text">Abdurex Port</h1>
+            <p className="admin-sidebar__subtitle">Command Center</p>
           </div>
         </div>
 
@@ -56,24 +56,21 @@ export default function AdminLayout() {
             className="admin-sidebar__live-btn"
             onClick={() => navigate('/')}
           >
+            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>visibility</span>
             View Live Site
-            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>open_in_new</span>
           </button>
           <div className="admin-sidebar__footer-links">
-            <NavLink to="/admin/settings" className="admin-nav-link">
-              <span className="material-symbols-outlined">settings</span>
-              <span>Settings</span>
-            </NavLink>
             <button 
               className="admin-nav-link admin-nav-link--danger" 
               style={{ width: '100%', textAlign: 'left', border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit' }}
               onClick={() => {
                 localStorage.removeItem('adminAuth');
+                localStorage.removeItem('adminEmail');
                 window.location.href = '/admin';
               }}
             >
               <span className="material-symbols-outlined">logout</span>
-              <span>Logout</span>
+              <span>Sign Out</span>
             </button>
           </div>
         </div>
@@ -99,25 +96,24 @@ export default function AdminLayout() {
             <span className="material-symbols-outlined">menu</span>
           </button>
 
-          <div className="admin-topbar__search">
-            <span className="material-symbols-outlined admin-topbar__search-icon">search</span>
-            <input
-              type="text"
-              placeholder="Search..."
-              className="admin-topbar__search-input"
-            />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div className="admin-status-pill">
+              <span className="admin-pulse-dot" />
+              <span>Supabase Connected</span>
+            </div>
           </div>
 
           <div className="admin-topbar__actions">
-            <button className="admin-icon-btn" aria-label="Notifications">
-              <span className="material-symbols-outlined">notifications</span>
-              <span className="admin-icon-btn__badge" />
+            <button
+              className="admin-btn admin-btn--outline"
+              style={{ padding: '6px 14px', fontSize: 12 }}
+              onClick={() => navigate('/')}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 16 }}>open_in_new</span>
+              Live Site
             </button>
-            <button className="admin-icon-btn" aria-label="Settings">
-              <span className="material-symbols-outlined">settings</span>
-            </button>
-            <div className="admin-topbar__avatar">
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#89ceff' }}>A</span>
+            <div className="admin-topbar__avatar" style={{ background: 'linear-gradient(135deg, #0ea5e9, #7e22ce)', border: 'none' }} title="Admin: Abdurehman">
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#ffffff' }}>A</span>
             </div>
           </div>
         </header>
