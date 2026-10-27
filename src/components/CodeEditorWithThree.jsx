@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Box } from '@react-three/drei';
 
+import ErrorBoundary from './ErrorBoundary';
+
 // 3D Box component that rotates smoothly
 function AnimatedBox({ hovered }) {
   const meshRef = useRef();
@@ -86,11 +88,13 @@ const CodeEditorWithThree = () => {
     >
       {/* Three.js Background */}
       <div className="code-editor-three-bg">
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1} />
-          <AnimatedBox hovered={hovered} />
-        </Canvas>
+        <ErrorBoundary fallback={<div className="w-full h-full bg-primary/5 rounded-2xl" />}>
+          <Canvas camera={{ position: [0, 0, 5], fov: 50 }} events={null}>
+            <ambientLight intensity={0.5} />
+            <pointLight position={[10, 10, 10]} intensity={1} />
+            <AnimatedBox hovered={hovered} />
+          </Canvas>
+        </ErrorBoundary>
       </div>
 
       {/* Code Editor Content */}

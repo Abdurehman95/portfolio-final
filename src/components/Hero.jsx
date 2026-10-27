@@ -1,13 +1,48 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ResumeDownload from './ResumeDownload';
+import { supabase } from '../supabaseClient';
 
+const defaultHero = {
+  title: "Hi, I'm Abdurehman Seid",
+  subtitle: "I build exceptional digital experiences that are fast, accessible, and visually appealing. Let's create something amazing together.",
+  ctaText: 'Hire Me',
+  ctaUrl: '#contact',
+  secondaryCtaText: 'Download CV',
+  secondaryCtaUrl: '#',
+  heroImage: '/image.png'
+};
 
 const Hero = () => {
+  const [heroData, setHeroData] = useState(defaultHero);
   const [text, setText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(100);
   const canvasRef = useRef(null);
+
+  // Fetch Hero from Supabase
+  useEffect(() => {
+    const fetchHero = async () => {
+      try {
+        const { data, error } = await supabase.from('hero_content').select('*').single();
+        if (data && !error) {
+          setHeroData(prev => ({
+            ...prev,
+            title: data.title || prev.title,
+            subtitle: data.subtitle || prev.subtitle,
+            ctaText: data.cta_text || prev.ctaText,
+            ctaUrl: data.cta_url || prev.ctaUrl,
+            secondaryCtaText: data.secondary_cta_text || prev.secondaryCtaText,
+            secondaryCtaUrl: data.secondary_cta_url || prev.secondaryCtaUrl,
+            heroImage: data.hero_image || prev.heroImage
+          }));
+        }
+      } catch (err) {
+        console.warn('Using default hero content:', err);
+      }
+    };
+    fetchHero();
+  }, []);
 
   // Typing Effect
   useEffect(() => {
@@ -153,7 +188,15 @@ const Hero = () => {
       <div className="container mx-auto px-6 flex flex-col-reverse lg:flex-row items-center justify-between relative z-10">
         <div className="lg:w-1/2 mb-12 lg:mb-0">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 fade-in-left text-center lg:text-left">
-            Hi, I'm <span className="gradient-text">Abdurehman Seid</span>
+            {(() => {
+              const titleStr = heroData.title || defaultHero.title;
+              const prefix = "Hi, I'm ";
+              if (titleStr.startsWith(prefix)) {
+                const name = titleStr.substring(prefix.length).trim();
+                return <>Hi, I'm <span className="gradient-text">{name || 'Abdurehman Seid'}</span></>;
+              }
+              return <span className="gradient-text">{titleStr}</span>;
+            })()}
           </h1>
           <div className="hero-title fade-in-left stagger-1 text-center lg:text-left">
             <span className="title-prefix"></span>
@@ -161,11 +204,12 @@ const Hero = () => {
             <span className="cursor"></span>
           </div>
           <p className="text-lg mb-8 text-slate-400 max-w-lg fade-in-left stagger-2 text-center lg:text-left">
-            I build exceptional digital experiences that are fast, accessible, and visually appealing.
-            Let's create something amazing together.
+            {heroData.subtitle}
           </p>
           <div className="flex justify-center lg:justify-start space-x-4 fade-in-left stagger-3">
-            <a href="#contact" className="px-6 py-3 rounded-full btn-primary font-medium">Hire Me</a>
+            <a href={heroData.ctaUrl || '#contact'} className="px-6 py-3 rounded-full btn-primary font-medium">
+              {heroData.ctaText || 'Hire Me'}
+            </a>
             <ResumeDownload />
 
           </div>
@@ -188,7 +232,7 @@ const Hero = () => {
           <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-secondary blur-2xl opacity-30 pulse-animation"></div>
             <img
-              src="/image.png"
+              src={heroData.heroImage || '/image.png'}
               alt="Profile"
               className="relative w-full h-full object-cover rounded-full border-4 border-slate-800 floating shadow-2xl"
             />
