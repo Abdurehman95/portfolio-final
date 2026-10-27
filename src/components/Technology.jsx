@@ -1,37 +1,119 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { supabase } from '../supabaseClient';
+
+const defaultTechSkills = [
+  { name: 'HTML/CSS', level: 95 },
+  { name: 'JavaScript', level: 90 },
+  { name: 'React', level: 85 },
+  { name: 'Node.js', level: 80 }
+];
+
+const defaultProfSkills = [
+  { name: 'Communication', level: 90 },
+  { name: 'Teamwork', level: 85 },
+  { name: 'Problem Solving', level: 95 },
+  { name: 'Creativity', level: 75 }
+];
+
+const defaultTools = [
+  { icon: 'fab fa-html5', name: 'HTML5', color: 'text-orange-500' },
+  { icon: 'fab fa-css3-alt', name: 'CSS3', color: 'text-blue-500' },
+  { icon: 'fab fa-js', name: 'JavaScript', color: 'text-yellow-400' },
+  { icon: 'fab fa-react', name: 'React', color: 'text-blue-400' },
+  { icon: 'fab fa-node-js', name: 'Node.js', color: 'text-green-500' },
+  { icon: 'fas fa-database', name: 'PostgreSQL', color: 'text-blue-400' },
+  { icon: 'fab fa-git-alt', name: 'Git', color: 'text-orange-600' },
+  { icon: 'fab fa-npm', name: 'npm', color: 'text-red-500' },
+  { icon: 'fab fa-microsoft', name: '.NET', color: 'text-indigo-600' },
+  { icon: 'fab fa-figma', name: 'Figma', color: 'text-purple-500' },
+  { icon: 'fas fa-terminal', name: 'VS Code', color: 'text-gray-300' },
+  { icon: 'fab fa-docker', name: 'Docker', color: 'text-blue-500' }
+];
+
+const toolIconMap = {
+  'react': { icon: 'fab fa-react', color: 'text-blue-400' },
+  'tailwind css': { icon: 'fab fa-css3-alt', color: 'text-cyan-400' },
+  'typescript': { icon: 'fab fa-js', color: 'text-blue-500' },
+  'node.js': { icon: 'fab fa-node-js', color: 'text-green-500' },
+  'python': { icon: 'fab fa-python', color: 'text-yellow-400' },
+  'postgresql': { icon: 'fas fa-database', color: 'text-blue-400' },
+  'supabase': { icon: 'fas fa-bolt', color: 'text-emerald-400' },
+  'springboot': { icon: 'fab fa-java', color: 'text-green-600' },
+  'nextjs': { icon: 'fab fa-react', color: 'text-slate-200' },
+  'html5': { icon: 'fab fa-html5', color: 'text-orange-500' },
+  'css3': { icon: 'fab fa-css3-alt', color: 'text-blue-500' },
+  'javascript': { icon: 'fab fa-js', color: 'text-yellow-400' },
+  'git': { icon: 'fab fa-git-alt', color: 'text-orange-600' },
+  'docker': { icon: 'fab fa-docker', color: 'text-blue-500' },
+  'figma': { icon: 'fab fa-figma', color: 'text-purple-500' }
+};
 
 const Technology = () => {
   const [animated, setAnimated] = useState(false);
+  const [technicalSkills, setTechnicalSkills] = useState(defaultTechSkills);
+  const [professionalSkills, setProfessionalSkills] = useState(defaultProfSkills);
+  const [tools, setTools] = useState(defaultTools);
   const sectionRef = useRef(null);
 
-  const technicalSkills = [
-    { name: 'HTML/CSS', level: 95 },
-    { name: 'JavaScript', level: 90 },
-    { name: 'React', level: 85 },
-    { name: 'Node.js', level: 80 }
-  ];
+  const fetchTechData = async () => {
+    try {
+      // 1. Fetch Skills from Supabase
+      const { data: skillsData, error: skillsError } = await supabase
+        .from('skills')
+        .select('*')
+        .order('proficiency', { ascending: false });
 
-  const professionalSkills = [
-    { name: 'Communication', level: 90 },
-    { name: 'Teamwork', level: 85 },
-    { name: 'Problem Solving', level: 95 },
-    { name: 'Creativity', level: 75 }
-  ];
+      if (!skillsError && skillsData && skillsData.length > 0) {
+        const tech = skillsData.filter(s => s.category !== 'Professional' && s.active !== false);
+        if (tech.length > 0) {
+          setTechnicalSkills(tech.map(s => ({ name: s.name, level: s.proficiency })));
+        }
+        const prof = skillsData.filter(s => s.category === 'Professional' && s.active !== false);
+        if (prof.length > 0) {
+          setProfessionalSkills(prof.map(s => ({ name: s.name, level: s.proficiency })));
+        }
+      }
 
-  const tools = [
-    { icon: 'fab fa-html5', name: 'HTML5', color: 'text-orange-500' },
-    { icon: 'fab fa-css3-alt', name: 'CSS3', color: 'text-blue-500' },
-    { icon: 'fab fa-js', name: 'JavaScript', color: 'text-yellow-400' },
-    { icon: 'fab fa-react', name: 'React', color: 'text-blue-400' },
-    { icon: 'fab fa-node-js', name: 'Node.js', color: 'text-green-500' },
-    { icon: 'fas fa-database', name: 'PostgreSQL', color: 'text-blue-400' },
-    { icon: 'fab fa-git-alt', name: 'Git', color: 'text-orange-600' },
-    { icon: 'fab fa-npm', name: 'npm', color: 'text-red-500' },
-    { icon: 'fab fa-microsoft', name: '.NET', color: 'text-indigo-600' },
-    { icon: 'fab fa-figma', name: 'Figma', color: 'text-purple-500' },
-    { icon: 'fas fa-terminal', name: 'VS Code', color: 'text-gray-300' },
-    { icon: 'fab fa-docker', name: 'Docker', color: 'text-blue-500' }
-  ];
+      // 2. Fetch Technologies from Supabase
+      const { data: techData, error: techError } = await supabase
+        .from('technologies')
+        .select('*');
+
+      if (!techError && techData && techData.length > 0) {
+        const mappedTools = techData.map(t => {
+          const key = t.name.toLowerCase().trim();
+          const matched = toolIconMap[key] || { icon: 'fas fa-code', color: 'text-primary' };
+          return {
+            name: t.name,
+            icon: matched.icon,
+            color: matched.color
+          };
+        });
+        setTools(mappedTools);
+      }
+    } catch (err) {
+      console.warn('Using default skills & technologies:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTechData();
+
+    const channel = supabase
+      .channel('public_tech_feed')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'skills' }, () => {
+        fetchTechData();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'technologies' }, () => {
+        fetchTechData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
 
   useEffect(() => {
     const observer = new IntersectionObserver(

@@ -32,7 +32,8 @@ export default function AdminServices() {
 
   const openAdd = () => { setForm(defaultForm); setEditItem(null); setShowModal(true); };
   const openEdit = (svc) => {
-    setForm({ ...svc, tags: (svc.tags || []).join(', ') });
+    const tagsStr = Array.isArray(svc.tags) ? svc.tags.join(', ') : (svc.tags || '');
+    setForm({ ...svc, tags: tagsStr });
     setEditItem(svc.id);
     setShowModal(true);
   };
@@ -44,26 +45,49 @@ export default function AdminServices() {
   };
 
   const handleSaveService = async () => {
-    const tagsArray = form.tags.split(',').map(t => t.trim()).filter(Boolean);
-    const payload = {
-      icon: form.icon, title: form.title, description: form.description,
-      tags: tagsArray, color: form.color, active: form.active
-    };
+    try {
+      const tagsArray = typeof form.tags === 'string'
+        ? form.tags.split(',').map(t => t.trim()).filter(Boolean)
+        : (Array.isArray(form.tags) ? form.tags : []);
 
-    if (editItem) {
-      await supabase.from('services').update(payload).eq('id', editItem);
-    } else {
-      await supabase.from('services').insert([payload]);
+      const payload = {
+        icon: form.icon,
+        title: form.title,
+        description: form.description,
+        tags: tagsArray,
+        color: form.color,
+        active: form.active
+      };
+
+      let result;
+      if (editItem) {
+        result = await supabase.from('services').update(payload).eq('id', editItem);
+      } else {
+        result = await supabase.from('services').insert([payload]);
+      }
+
+      if (result.error) {
+        console.error('Error saving service:', result.error);
+        alert('Failed to save service: ' + result.error.message);
+        return;
+      }
+
+      await fetchServices();
+      closeModal();
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error('Save service exception:', err);
+      alert('Error saving service: ' + err.message);
     }
-
-    await fetchServices();
-    closeModal();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
   };
 
   const handleDelete = async (id) => {
-    await supabase.from('services').delete().eq('id', id);
+    const { error } = await supabase.from('services').delete().eq('id', id);
+    if (error) {
+      alert('Failed to delete service: ' + error.message);
+      return;
+    }
     await fetchServices();
     setDeleteConfirm(null);
   };
@@ -71,8 +95,12 @@ export default function AdminServices() {
   const toggleActive = async (id) => {
     const svc = services.find(s => s.id === id);
     if (svc) {
-      await supabase.from('services').update({ active: !svc.active }).eq('id', id);
-      await fetchServices();
+      const { error } = await supabase.from('services').update({ active: !svc.active }).eq('id', id);
+      if (error) {
+        console.error('Toggle active error:', error);
+      } else {
+        await fetchServices();
+      }
     }
   };
 
@@ -90,34 +118,40 @@ export default function AdminServices() {
       </div>
 
       <div className="admin-bento-grid">
-        {services.map((svc) => (
-          <div key={svc.id} className={`admin-service-card${!svc.active ? ' admin-service-card--inactive' : ''}`}>
-            {/* Hover actions */}
-            <div className="admin-service-card__actions">
-              <button className="admin-icon-action" onClick={() => toggleActive(svc.id)} title={svc.active ? 'Hide' : 'Show'}>
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{svc.active ? 'visibility' : 'visibility_off'}</span>
-              </button>
-              <button className="admin-icon-action" onClick={() => openEdit(svc)} title="Edit">
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>edit</span>
-              </button>
-              <button className="admin-icon-action admin-icon-action--danger" onClick={() => setDeleteConfirm(svc.id)} title="Delete">
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>
-              </button>
-            </div>
+        {services.map((svc) => {
+          const tagsList = Array.isArray(svc.tags)
+            ? svc.tags
+            : (typeof svc.tags === 'string' ? svc.tags.split(',').map(t => t.trim()).filter(Boolean) : []);
 
-            <div className={`admin-service-card__icon admin-service-card__icon--${svc.color}`}>
-              <span className="material-symbols-outlined" style={{ fontSize: 24 }}>{svc.icon}</span>
+          return (
+            <div key={svc.id} className={`admin-service-card${!svc.active ? ' admin-service-card--inactive' : ''}`}>
+              {/* Hover actions */}
+              <div className="admin-service-card__actions">
+                <button className="admin-icon-action" onClick={() => toggleActive(svc.id)} title={svc.active ? 'Hide' : 'Show'}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{svc.active ? 'visibility' : 'visibility_off'}</span>
+                </button>
+                <button className="admin-icon-action" onClick={() => openEdit(svc)} title="Edit">
+                  <span className="material-symbols-outlined" style={{ fontSize: 18 }}>edit</span>
+                </button>
+                <button className="admin-icon-action admin-icon-action--danger" onClick={() => setDeleteConfirm(svc.id)} title="Delete">
+                  <span className="material-symbols-outlined" style={{ fontSize: 18 }}>delete</span>
+                </button>
+              </div>
+
+              <div className={`admin-service-card__icon admin-service-card__icon--${svc.color || 'primary'}`}>
+                <span className="material-symbols-outlined" style={{ fontSize: 24 }}>{svc.icon}</span>
+              </div>
+              <h3 className="admin-service-card__title">{svc.title}</h3>
+              <p className="admin-service-card__desc">{svc.description}</p>
+              <div className="admin-tag-row">
+                {tagsList.map(tag => (
+                  <span key={tag} className={`admin-tag admin-tag--${svc.color || 'primary'}`}>{tag}</span>
+                ))}
+              </div>
+              {!svc.active && <div className="admin-service-card__hidden-badge">Hidden</div>}
             </div>
-            <h3 className="admin-service-card__title">{svc.title}</h3>
-            <p className="admin-service-card__desc">{svc.description}</p>
-            <div className="admin-tag-row">
-              {svc.tags.map(tag => (
-                <span key={tag} className={`admin-tag admin-tag--${svc.color}`}>{tag}</span>
-              ))}
-            </div>
-            {!svc.active && <div className="admin-service-card__hidden-badge">Hidden</div>}
-          </div>
-        ))}
+          );
+        })}
 
         {/* Add new placeholder */}
         <button className="admin-add-card" onClick={openAdd}>
