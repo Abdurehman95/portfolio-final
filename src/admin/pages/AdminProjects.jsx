@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 
-const initialProjects = [
-  { id: 1, title: 'Tourism management system', subtitle: 'Productivity App', category: 'Web', status: 'Published', featured: true, image: '/tms.png', description: 'A productivity app for managing tourism and developing nation.', github_url: 'https://github.com/Abdurehman95/TOURISM-MANAGEMENT-SYSSTEM-UPDATED', live_url: '#', technologies: 'React, php, TailwindCSS' },
-  { id: 2, title: 'Portfolio Website', subtitle: 'Personal Portfolio', category: 'Web', status: 'Published', featured: true, image: '/portfolio.png', description: 'A responsive portfolio website built with modern design principles.', github_url: 'https://github.com/Abdurehman95/react-portfolio-final', live_url: 'https://abdurex.vercel.app/', technologies: 'CSS3, React' },
-  { id: 3, title: 'E-commerce Platform', subtitle: 'Online Store', category: 'Web', status: 'Draft', featured: false, image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1470&q=80', description: 'A full-featured e-commerce platform built with React, Node.js, and MongoDB.', github_url: '#', live_url: '#', technologies: 'React, Node.js, MongoDB' },
-];
-
 const defaultForm = {
   title: '', subtitle: '', description: '', githubUrl: '', liveUrl: '',
   category: 'Web', status: 'Draft', featured: false, technologies: '', image: '',
@@ -34,11 +28,15 @@ export default function AdminProjects() {
   }, []);
 
   const fetchProjects = async () => {
-    const { data } = await supabase.from('projects').select('*').order('id', { ascending: true });
-    if (data && data.length > 0) {
-      setProjects(data);
-    } else {
-      setProjects(initialProjects);
+    try {
+      const { data, error } = await supabase.from('projects').select('*').order('id', { ascending: true });
+      if (error) {
+        console.error('Error fetching projects from Supabase:', error);
+      } else if (data) {
+        setProjects(data);
+      }
+    } catch (err) {
+      console.error('Error loading projects:', err);
     }
   };
 
@@ -74,36 +72,60 @@ export default function AdminProjects() {
   };
 
   const handleSave = async () => {
-    const payload = { 
-      title: form.title, subtitle: form.subtitle, description: form.description, 
-      github_url: form.githubUrl, live_url: form.liveUrl, category: form.category, 
-      status: form.status, featured: form.featured, technologies: form.technologies, 
-      image: imagePreview || '' 
-    };
+    try {
+      const payload = { 
+        title: form.title, subtitle: form.subtitle, description: form.description, 
+        github_url: form.githubUrl, live_url: form.liveUrl, category: form.category, 
+        status: form.status, featured: form.featured, technologies: form.technologies, 
+        image: imagePreview || '' 
+      };
 
-    if (editItem) {
-      await supabase.from('projects').update(payload).eq('id', editItem);
-    } else {
-      await supabase.from('projects').insert([payload]);
+      let result;
+      if (editItem) {
+        result = await supabase.from('projects').update(payload).eq('id', editItem);
+      } else {
+        result = await supabase.from('projects').insert([payload]);
+      }
+
+      if (result.error) {
+        console.error('Error saving project:', result.error);
+        alert('Failed to save project: ' + result.error.message);
+        return;
+      }
+      
+      await fetchProjects();
+      closeModal();
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error('Error in handleSave:', err);
+      alert('Error saving project: ' + err.message);
     }
-    
-    await fetchProjects();
-    closeModal();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
   };
 
   const handleDelete = async (id) => { 
-    await supabase.from('projects').delete().eq('id', id);
-    await fetchProjects();
-    setDeleteConfirm(null); 
+    try {
+      const { error } = await supabase.from('projects').delete().eq('id', id);
+      if (error) {
+        alert('Failed to delete project: ' + error.message);
+        return;
+      }
+      await fetchProjects();
+      setDeleteConfirm(null);
+    } catch (err) {
+      alert('Error deleting project: ' + err.message);
+    }
   };
 
   const toggleFeatured = async (id) => {
     const p = projects.find(x => x.id === id);
     if (p) {
-      await supabase.from('projects').update({ featured: !p.featured }).eq('id', id);
-      await fetchProjects();
+      const { error } = await supabase.from('projects').update({ featured: !p.featured }).eq('id', id);
+      if (error) {
+        console.error('Error toggling featured:', error);
+      } else {
+        await fetchProjects();
+      }
     }
   };
 
