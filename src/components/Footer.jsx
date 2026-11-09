@@ -1,6 +1,9 @@
 import React from 'react';
+import { useSocialLinks, sanitizeUrl } from '../utils/socialLinks';
 
 const Footer = () => {
+  const { activeLinks } = useSocialLinks();
+
   return (
     <footer className="bg-darker py-12">
       <div className="container mx-auto px-6">
@@ -10,19 +13,20 @@ const Footer = () => {
             <p className="text-slate-400 mt-2">© 2023 Abdurehman Seid. All rights reserved.</p>
           </div>
           
-          <div className="flex space-x-6">
-            <a href="https://github.com/Abdurehman95" className="text-slate-400 hover:text-primary transition-all duration-300">
-              <i className="fab fa-github text-2xl"></i>
-            </a>
-            <a href="https://www.linkedin.com/feed/" className="text-slate-400 hover:text-blue-600 transition-all duration-300">
-              <i className="fab fa-linkedin-in text-2xl"></i>
-            </a>
-            <a href="https://x.com/home" className="text-slate-400 hover:text-blue-400 transition-all duration-300">
-              <i className="fab fa-twitter text-2xl"></i>
-            </a>
-            <a href="https://t.me/abdu_8995" className="text-slate-400 hover:text-pink-600 transition-all duration-300">
-              <i className="fab fa-telegram text-2xl"></i>
-            </a>
+          <div className="flex flex-wrap justify-center gap-6">
+            {activeLinks.map((link) => (
+              <a
+                key={link.id}
+                href={sanitizeUrl(link.url)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.platform}
+                title={link.platform}
+                className="text-slate-400 hover:text-primary transition-all duration-300"
+              >
+                <i className={`${link.icon} text-2xl`}></i>
+              </a>
+            ))}
           </div>
         </div>
         
