@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 import './admin.css';
 
 const navItems = [
@@ -10,6 +11,7 @@ const navItems = [
   { to: '/admin/skills', label: 'Skills', icon: 'school' },
   { to: '/admin/technologies', label: 'Technologies', icon: 'memory' },
   { to: '/admin/projects', label: 'Projects', icon: 'folder_special' },
+  { to: '/admin/social', label: 'Social Links', icon: 'share' },
   { to: '/admin/messages', label: 'Messages', icon: 'mail' },
 ];
 
@@ -60,12 +62,21 @@ export default function AdminLayout() {
             View Live Site
           </button>
           <div className="admin-sidebar__footer-links">
+            <NavLink to="/admin/social" className="admin-nav-link">
+              <span className="material-symbols-outlined">settings</span>
+              <span>Social & Settings</span>
+            </NavLink>
             <button 
               className="admin-nav-link admin-nav-link--danger" 
               style={{ width: '100%', textAlign: 'left', border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit' }}
-              onClick={() => {
+              onClick={async () => {
                 localStorage.removeItem('adminAuth');
                 localStorage.removeItem('adminEmail');
+                try {
+                  await supabase.auth.signOut();
+                } catch (err) {
+                  console.warn('Sign out error:', err);
+                }
                 window.location.href = '/admin';
               }}
             >

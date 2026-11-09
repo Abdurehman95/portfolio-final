@@ -91,6 +91,7 @@ export default function AdminDashboard() {
   ];
 
   const quickLinks = [
+    { to: '/admin/social', label: 'Social Media Links', icon: 'share', desc: 'Manage Instagram, LinkedIn, GitHub & socials' },
     { to: '/admin/hero', label: 'Manage Hero', icon: 'home', desc: 'Configure hero title, subtitle & CTA buttons' },
     { to: '/admin/about', label: 'Edit About Me', icon: 'person', desc: 'Update biography, metrics, phone & contact' },
     { to: '/admin/projects', label: 'Projects Repository', icon: 'folder_special', desc: 'Add, publish, or modify showcased projects' },
