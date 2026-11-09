@@ -5,19 +5,38 @@ const initialMessages = [
   {
     id: 1, name: 'John Doe', email: 'john@example.com', subject: 'Website Development',
     message: `Hello Abdurehman,\n\nI saw your portfolio and would like to discuss a potential collaboration on a new enterprise dashboard project we are launching next quarter. We are specifically looking for someone with your expertise in designing high-fidelity, high-performance interfaces.\n\nOur current tech stack involves heavily customized Tailwind CSS and advanced charting libraries, and we need a design system that feels like a true "command center" — minimal, glassy, and utilizing high-contrast neon accents on deep dark backgrounds.\n\nKey Requirements:\n• Design a 12-column grid system layout.\n• Establish a comprehensive design token system.\n• Create modular, reusable UI components.\n\nPlease let me know if you have availability next week for a 30-minute introductory call.\n\nBest regards,\nJohn Doe\nProduct Manager | Nexus Tech`,
-    isRead: false, time: '2h ago', initials: 'JD', color: 'primary',
+    is_read: false, time: '2h ago', initials: 'JD', color: 'primary',
   },
   {
     id: 2, name: 'Sara Ahmed', email: 'sara@example.com', subject: 'Collaboration',
     message: `Hi Abdurehman,\n\nAre you available for a quick sync next week regarding the new project? We'd love to discuss the scope and potential collaboration.\n\nBest,\nSara`,
-    isRead: true, time: 'Yesterday', initials: 'SA', color: 'secondary',
+    is_read: true, time: 'Yesterday', initials: 'SA', color: 'secondary',
   },
   {
     id: 3, name: 'Mike Kline', email: 'mike@example.com', subject: 'Server Migration Status',
     message: `Hi,\n\nThe migration completed successfully with 0 downtime. All services are running as expected. Let me know if you need the full report.\n\nThanks,\nMike`,
-    isRead: true, time: 'Oct 12', initials: 'MK', color: 'tertiary',
+    is_read: true, time: 'Oct 12', initials: 'MK', color: 'tertiary',
   },
 ];
+
+const getInitials = (msg) => {
+  if (msg?.initials) return msg.initials;
+  if (!msg?.name) return 'U';
+  return msg.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+};
+
+const getTimeString = (msg) => {
+  if (msg?.time) return msg.time;
+  if (msg?.created_at) {
+    try {
+      const d = new Date(msg.created_at);
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    } catch {
+      return 'Recent';
+    }
+  }
+  return 'Recent';
+};
 
 export default function AdminMessages() {
   const [messages, setMessages] = useState([]);
@@ -32,10 +51,14 @@ export default function AdminMessages() {
   }, []);
 
   const fetchMessages = async () => {
-    const { data } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
-    if (data && data.length > 0) {
-      setMessages(data);
-    } else {
+    try {
+      const { data, error } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
+      if (!error && data && data.length > 0) {
+        setMessages(data);
+      } else {
+        setMessages(initialMessages);
+      }
+    } catch {
       setMessages(initialMessages);
     }
   };
@@ -49,32 +72,48 @@ export default function AdminMessages() {
       return true;
     })
     .filter(m =>
-      m.name.toLowerCase().includes(search.toLowerCase()) ||
-      m.subject.toLowerCase().includes(search.toLowerCase())
+      (m.name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (m.subject || '').toLowerCase().includes(search.toLowerCase())
     );
 
   const handleSelect = async (msg) => {
     setSelected(msg);
     if (!msg.is_read) {
-      await supabase.from('messages').update({ is_read: true }).eq('id', msg.id);
-      await fetchMessages();
+      try {
+        await supabase.from('messages').update({ is_read: true }).eq('id', msg.id);
+        await fetchMessages();
+      } catch (err) {
+        console.warn('Failed to mark read:', err);
+      }
     }
   };
 
   const handleMarkRead = async (id) => {
-    await supabase.from('messages').update({ is_read: true }).eq('id', id);
-    await fetchMessages();
+    try {
+      await supabase.from('messages').update({ is_read: true }).eq('id', id);
+      await fetchMessages();
+    } catch (err) {
+      console.warn('Failed to mark read:', err);
+    }
     if (selected?.id === id) setSelected({ ...selected, is_read: true });
   };
 
   const handleMarkUnread = async (id) => {
-    await supabase.from('messages').update({ is_read: false }).eq('id', id);
-    await fetchMessages();
+    try {
+      await supabase.from('messages').update({ is_read: false }).eq('id', id);
+      await fetchMessages();
+    } catch (err) {
+      console.warn('Failed to mark unread:', err);
+    }
     if (selected?.id === id) setSelected({ ...selected, is_read: false });
   };
 
   const handleDelete = async (id) => {
-    await supabase.from('messages').delete().eq('id', id);
+    try {
+      await supabase.from('messages').delete().eq('id', id);
+    } catch (err) {
+      console.warn('Failed to delete message:', err);
+    }
     const remaining = messages.filter(m => m.id !== id);
     setMessages(remaining);
     setDeleteConfirm(null);
@@ -156,16 +195,16 @@ export default function AdminMessages() {
                 onClick={() => handleSelect(msg)}
               >
                 {!msg.is_read && <div className="admin-msg-item__dot" />}
-                <div className="admin-msg-item__avatar" style={{ color: `var(--clr-${msg.color})` }}>
-                  {msg.initials}
+                <div className="admin-msg-item__avatar" style={{ color: `var(--clr-${msg.color || 'primary'})` }}>
+                  {getInitials(msg)}
                 </div>
                 <div className="admin-msg-item__body">
                   <div className="admin-msg-item__top">
                     <span className={`admin-msg-item__name${!msg.is_read ? ' admin-msg-item__name--bold' : ''}`}>{msg.name}</span>
-                    <span className={`admin-msg-item__time${!msg.is_read ? ' admin-msg-item__time--unread' : ''}`}>{msg.time}</span>
+                    <span className={`admin-msg-item__time${!msg.is_read ? ' admin-msg-item__time--unread' : ''}`}>{getTimeString(msg)}</span>
                   </div>
                   <div className="admin-msg-item__subject">{msg.subject}</div>
-                  <div className="admin-msg-item__preview">{msg.message.substring(0, 80)}...</div>
+                  <div className="admin-msg-item__preview">{(msg.message || '').substring(0, 80)}...</div>
                 </div>
               </div>
             ))}
@@ -197,15 +236,15 @@ export default function AdminMessages() {
                   </div>
                 </div>
                 <div className="admin-inbox-detail__sender">
-                  <div className="admin-inbox-detail__avatar" style={{ color: `var(--clr-${selected.color})` }}>
-                    {selected.initials}
+                  <div className="admin-inbox-detail__avatar" style={{ color: `var(--clr-${selected.color || 'primary'})` }}>
+                    {getInitials(selected)}
                   </div>
                   <div>
                     <div className="admin-inbox-detail__sender-name">
                       {selected.name}
                       <span className="admin-inbox-detail__sender-email">&lt;{selected.email}&gt;</span>
                     </div>
-                    <div className="admin-inbox-detail__sender-to">To: Abdurehman • {selected.time}</div>
+                    <div className="admin-inbox-detail__sender-to">To: Abdurehman • {getTimeString(selected)}</div>
                   </div>
                   <div style={{ marginLeft: 'auto' }}>
                     <a
@@ -222,7 +261,7 @@ export default function AdminMessages() {
 
               {/* Message body */}
               <div className="admin-inbox-detail__body">
-                {selected.message.split('\n').map((line, i) => (
+                {(selected.message || '').split('\n').map((line, i) => (
                   line.startsWith('•') ? (
                     <li key={i} style={{ color: 'var(--clr-on-surface-variant)', marginLeft: 16, marginBottom: 4 }}>{line.slice(1).trim()}</li>
                   ) : line.trim() === '' ? (

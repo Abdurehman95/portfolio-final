@@ -57,25 +57,43 @@ export default function AdminTechnologies() {
   };
 
   const handleDeleteCategory = async (cat) => {
-    await supabase.from('technologies').delete().eq('category', cat);
-    await fetchTechs();
-    setDeleteConfirmCat(null);
+    try {
+      const { error } = await supabase.from('technologies').delete().eq('category', cat);
+      if (error) throw error;
+      await fetchTechs();
+      setDeleteConfirmCat(null);
+    } catch (err) {
+      console.error('Error deleting category:', err);
+      alert('Failed to delete category: ' + err.message);
+    }
   };
 
   const handleAddTech = async (cat) => {
     if (!newTech.name.trim()) return;
-    await supabase.from('technologies').insert([{ name: newTech.name, proficiency: newTech.proficiency, category: cat }]);
-    await fetchTechs();
-    setNewTech({ name: '', proficiency: 80 });
-    setShowAddTech(null);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    try {
+      const { error } = await supabase.from('technologies').insert([{ name: newTech.name.trim(), proficiency: Number(newTech.proficiency) || 80, category: cat }]);
+      if (error) throw error;
+      await fetchTechs();
+      setNewTech({ name: '', proficiency: 80 });
+      setShowAddTech(null);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+      console.error('Error adding tech:', err);
+      alert('Failed to add technology: ' + err.message);
+    }
   };
 
   const handleDeleteTech = async (cat, id) => {
-    await supabase.from('technologies').delete().eq('id', id);
-    await fetchTechs();
-    setDeleteConfirmTech(null);
+    try {
+      const { error } = await supabase.from('technologies').delete().eq('id', id);
+      if (error) throw error;
+      await fetchTechs();
+      setDeleteConfirmTech(null);
+    } catch (err) {
+      console.error('Error deleting tech:', err);
+      alert('Failed to delete technology: ' + err.message);
+    }
   };
 
   const startEditTech = (cat, tech) => {
@@ -85,11 +103,17 @@ export default function AdminTechnologies() {
 
   const saveEditTech = async () => {
     const { id } = editingTech;
-    await supabase.from('technologies').update({ name: editForm.name, proficiency: editForm.proficiency }).eq('id', id);
-    await fetchTechs();
-    setEditingTech(null);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    try {
+      const { error } = await supabase.from('technologies').update({ name: editForm.name.trim(), proficiency: Number(editForm.proficiency) || 80 }).eq('id', id);
+      if (error) throw error;
+      await fetchTechs();
+      setEditingTech(null);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+      console.error('Error updating tech:', err);
+      alert('Failed to update technology: ' + err.message);
+    }
   };
 
   return (

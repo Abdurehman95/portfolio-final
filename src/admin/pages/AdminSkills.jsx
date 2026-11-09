@@ -49,26 +49,39 @@ export default function AdminSkills() {
 
   const handleSave = async () => {
     const payload = {
-      name: form.name, category: form.category, proficiency: form.proficiency,
+      name: form.name.trim(), category: form.category, proficiency: Number(form.proficiency) || 80,
       icon: form.icon, color: form.color, active: form.active
     };
 
-    if (editItem) {
-      await supabase.from('skills').update(payload).eq('id', editItem);
-    } else {
-      await supabase.from('skills').insert([payload]);
-    }
+    try {
+      if (editItem) {
+        const { error } = await supabase.from('skills').update(payload).eq('id', editItem);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('skills').insert([payload]);
+        if (error) throw error;
+      }
 
-    await fetchSkills();
-    closeModal();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+      await fetchSkills();
+      closeModal();
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error('Error saving skill:', err);
+      alert('Failed to save skill: ' + (err.message || 'Check database connection'));
+    }
   };
 
   const handleDelete = async (id) => {
-    await supabase.from('skills').delete().eq('id', id);
-    await fetchSkills();
-    setDeleteConfirm(null);
+    try {
+      const { error } = await supabase.from('skills').delete().eq('id', id);
+      if (error) throw error;
+      await fetchSkills();
+      setDeleteConfirm(null);
+    } catch (err) {
+      console.error('Error deleting skill:', err);
+      alert('Failed to delete skill: ' + err.message);
+    }
   };
 
   return (
