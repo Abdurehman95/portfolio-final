@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ResumeDownload from './ResumeDownload';
+import { useSocialLinks, sanitizeUrl } from '../utils/socialLinks';
 import { supabase } from '../supabaseClient';
 
 const defaultHero = {
@@ -7,41 +8,36 @@ const defaultHero = {
   subtitle: "I build exceptional digital experiences that are fast, accessible, and visually appealing. Let's create something amazing together.",
   ctaText: 'Hire Me',
   ctaUrl: '#contact',
-  secondaryCtaText: 'Download CV',
-  secondaryCtaUrl: '#',
   heroImage: '/image.png'
 };
 
 const Hero = () => {
-  const [heroData, setHeroData] = useState(defaultHero);
+  const { activeLinks } = useSocialLinks();
+  const [heroContent, setHeroContent] = useState(defaultHero);
   const [text, setText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(100);
   const canvasRef = useRef(null);
 
-  // Fetch Hero from Supabase
   useEffect(() => {
-    const fetchHero = async () => {
+    const fetchHeroData = async () => {
       try {
-        const { data, error } = await supabase.from('hero_content').select('*').single();
-        if (data && !error) {
-          setHeroData(prev => ({
-            ...prev,
-            title: data.title || prev.title,
-            subtitle: data.subtitle || prev.subtitle,
-            ctaText: data.cta_text || prev.ctaText,
-            ctaUrl: data.cta_url || prev.ctaUrl,
-            secondaryCtaText: data.secondary_cta_text || prev.secondaryCtaText,
-            secondaryCtaUrl: data.secondary_cta_url || prev.secondaryCtaUrl,
-            heroImage: data.hero_image || prev.heroImage
-          }));
+        const { data } = await supabase.from('hero_content').select('*').single();
+        if (data) {
+          setHeroContent({
+            title: data.title || defaultHero.title,
+            subtitle: data.subtitle || defaultHero.subtitle,
+            ctaText: data.cta_text || defaultHero.ctaText,
+            ctaUrl: data.cta_url || defaultHero.ctaUrl,
+            heroImage: data.hero_image || defaultHero.heroImage
+          });
         }
       } catch (err) {
-        console.warn('Using default hero content:', err);
+        // Fall back to default
       }
     };
-    fetchHero();
+    fetchHeroData();
   }, []);
 
   // Typing Effect
@@ -188,15 +184,13 @@ const Hero = () => {
       <div className="container mx-auto px-6 flex flex-col-reverse lg:flex-row items-center justify-between relative z-10">
         <div className="lg:w-1/2 mb-12 lg:mb-0">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 fade-in-left text-center lg:text-left">
-            {(() => {
-              const titleStr = heroData.title || defaultHero.title;
-              const prefix = "Hi, I'm ";
-              if (titleStr.startsWith(prefix)) {
-                const name = titleStr.substring(prefix.length).trim();
-                return <>Hi, I'm <span className="gradient-text">{name || 'Abdurehman Seid'}</span></>;
-              }
-              return <span className="gradient-text">{titleStr}</span>;
-            })()}
+            {heroContent.title.includes("I'm ") ? (
+              <>
+                {heroContent.title.split("I'm ")[0]}I'm <span className="gradient-text">{heroContent.title.split("I'm ")[1]}</span>
+              </>
+            ) : (
+              <span className="gradient-text">{heroContent.title}</span>
+            )}
           </h1>
           <div className="hero-title fade-in-left stagger-1 text-center lg:text-left">
             <span className="title-prefix"></span>
@@ -204,35 +198,35 @@ const Hero = () => {
             <span className="cursor"></span>
           </div>
           <p className="text-lg mb-8 text-slate-400 max-w-lg fade-in-left stagger-2 text-center lg:text-left">
-            {heroData.subtitle}
+            {heroContent.subtitle}
           </p>
           <div className="flex justify-center lg:justify-start space-x-4 fade-in-left stagger-3">
-            <a href={heroData.ctaUrl || '#contact'} className="px-6 py-3 rounded-full btn-primary font-medium">
-              {heroData.ctaText || 'Hire Me'}
+            <a href={heroContent.ctaUrl || "#contact"} className="px-6 py-3 rounded-full btn-primary font-medium">
+              {heroContent.ctaText || "Hire Me"}
             </a>
             <ResumeDownload />
-
           </div>
-          <div className="flex justify-center lg:justify-start mt-8 space-x-4 fade-in-left stagger-4">
-            <a href="https://github.com/Abdurehman95" target="_blank" rel="noopener noreferrer" className="social-icon text-xl w-12 h-12 flex items-center justify-center rounded-full bg-slate-800 hover:text-white">
-              <i className="fab fa-github"></i>
-            </a>
-            <a href="https://www.linkedin.com/feed/" target="_blank" rel="noopener noreferrer" className="social-icon text-xl w-12 h-12 flex items-center justify-center rounded-full bg-slate-800 hover:text-white">
-              <i className="fab fa-linkedin-in"></i>
-            </a>
-            <a href="https://x.com/home" target="_blank" rel="noopener noreferrer" className="social-icon text-xl w-12 h-12 flex items-center justify-center rounded-full bg-slate-800 hover:text-white">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="https://t.me/abdu_8995" target="_blank" rel="noopener noreferrer" className="social-icon text-xl w-12 h-12 flex items-center justify-center rounded-full bg-slate-800 hover:text-white">
-              <i className="fab fa-telegram"></i>
-            </a>
+          <div className="flex flex-wrap justify-center lg:justify-start mt-8 gap-4 fade-in-left stagger-4">
+            {activeLinks.map((link) => (
+              <a
+                key={link.id}
+                href={sanitizeUrl(link.url)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.platform}
+                title={link.platform}
+                className="social-icon text-xl w-12 h-12 flex items-center justify-center rounded-full bg-slate-800 hover:text-white"
+              >
+                <i className={link.icon}></i>
+              </a>
+            ))}
           </div>
         </div>
         <div className="lg:w-1/2 flex justify-center fade-in-right mb-12 lg:mb-0">
           <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-secondary blur-2xl opacity-30 pulse-animation"></div>
             <img
-              src={heroData.heroImage || '/image.png'}
+              src={heroContent.heroImage || "/image.png"}
               alt="Profile"
               className="relative w-full h-full object-cover rounded-full border-4 border-slate-800 floating shadow-2xl"
             />

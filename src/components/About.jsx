@@ -6,10 +6,12 @@ import { supabase } from '../supabaseClient';
 const defaultAbout = {
   heading: 'Who am I?',
   description: "I'm a passionate Full Stack Developer with over 3 years of experience creating modern web applications. I specialize in JavaScript ecosystems including React, Node.js, and modern CSS frameworks.",
+  yearsExperience: '3+ Years',
+  projectsCompleted: 15,
+  clients: 10,
   name: 'Abdurehman seid',
   email: 'abdurehmanseid@gmail.com',
   phone: '+251967192079',
-  experience: '3+ Years',
   location: 'Ethiopia, Woldia'
 };
 
@@ -19,17 +21,19 @@ const About = () => {
   useEffect(() => {
     const fetchAbout = async () => {
       try {
-        const { data, error } = await supabase.from('about_content').select('*').single();
-        if (data && !error) {
+        const { data } = await supabase.from('about_content').select('*').single();
+        if (data) {
           setAboutData(prev => ({
             ...prev,
             heading: data.heading || prev.heading,
             description: data.description || prev.description,
-            experience: data.years_experience ? `${data.years_experience}+ Years` : prev.experience
+            yearsExperience: data.years_experience ? `${data.years_experience}+ Years` : prev.yearsExperience,
+            projectsCompleted: data.projects_completed ?? prev.projectsCompleted,
+            clients: data.clients ?? prev.clients
           }));
         }
       } catch (err) {
-        console.warn('Using default about content:', err);
+        // Fall back to defaults
       }
     };
     fetchAbout();
@@ -52,7 +56,7 @@ const About = () => {
 
           <div className="lg:w-2/3">
             <h3 className="text-2xl font-bold mb-6 fade-in-right">{aboutData.heading}</h3>
-            <p className="text-slate-400 mb-6 fade-in-right stagger-1 whitespace-pre-line leading-relaxed">
+            <p className="text-slate-400 mb-6 fade-in-right stagger-1 whitespace-pre-line">
               {aboutData.description}
             </p>
 
@@ -63,7 +67,7 @@ const About = () => {
                 <h4 className="font-semibold mb-2">Phone: <span className="text-slate-300">{aboutData.phone}</span></h4>
               </div>
               <div className="fade-in-right stagger-3">
-                <h4 className="font-semibold mb-2">Experience: <span className="text-slate-300">{aboutData.experience}</span></h4>
+                <h4 className="font-semibold mb-2">Experience: <span className="text-slate-300">{aboutData.yearsExperience}</span></h4>
                 <h4 className="font-semibold mb-2">Location: <span className="text-slate-300">{aboutData.location}</span></h4>
               </div>
             </div>

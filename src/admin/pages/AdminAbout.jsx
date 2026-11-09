@@ -80,6 +80,9 @@ export default function AdminAbout() {
     if (!error) {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
+    } else {
+      console.error('Error saving about data:', error);
+      alert('Failed to save about data: ' + error.message);
     }
   };
 

@@ -44,7 +44,7 @@ export default function AdminHero() {
         setImagePreview(initialState.heroImage);
       }
     } catch (err) {
-      console.error('Error:', err);
+      console.error('Error fetching hero data:', err);
     }
   };
 
@@ -88,7 +88,8 @@ export default function AdminHero() {
         setTimeout(() => setSaved(false), 3000);
       }
     } catch (err) {
-      console.error('Error:', err);
+      console.error('Error saving data:', err);
+      alert('Failed to save data: ' + (err.message || 'Check network connection'));
     }
   };
 
