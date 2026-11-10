@@ -17,7 +17,7 @@ export default function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.email) {
-      setError('Please enter your admin email.');
+      setError('Please enter your email.');
       return;
     }
     if (!form.password) {
@@ -82,7 +82,7 @@ export default function AdminLogin() {
           )}
 
           <div className="command-field">
-            <label className="command-label" htmlFor="admin-email">Admin Email</label>
+            <label className="command-label" htmlFor="admin-email">Email</label>
             <div className="command-input-wrap">
               <span className="command-input-at">@</span>
               <input

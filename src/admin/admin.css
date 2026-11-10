@@ -695,6 +695,7 @@
   margin: 0 0 12px;
   background: linear-gradient(135deg, #89ceff, #d2bbff);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -1289,6 +1290,7 @@
   font-size: 30px;
   font-weight: 700;
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
 }
 
@@ -1500,6 +1502,7 @@
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .admin-modal--sm { max-width: 400px; }
@@ -1511,6 +1514,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .admin-modal__title {
@@ -1535,14 +1539,18 @@
 .admin-modal__body {
   padding: 24px;
   overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .admin-modal__footer {
-  padding: 20px 24px;
+  padding: 18px 24px;
   border-top: 1px solid rgba(148, 163, 184, 0.12);
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  flex-shrink: 0;
+  background: #0b1326;
 }
 
 /* Skills */
@@ -2437,6 +2445,7 @@
 .command-brand-title-accent {
   background: linear-gradient(135deg, #a855f7 0%, #d8b4fe 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -2463,7 +2472,7 @@
 }
 
 .command-field {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .command-label {
@@ -2480,7 +2489,8 @@
   align-items: center;
   background: #070d1a;
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 14px;
+  border-radius: 50px;
+  overflow: hidden;
   transition: all 0.2s ease;
 }
 
@@ -2491,7 +2501,7 @@
 
 .command-input-at {
   position: absolute;
-  left: 16px;
+  left: 18px;
   font-size: 16px;
   font-weight: 600;
   color: #64748b;
@@ -2500,7 +2510,7 @@
 
 .command-input-icon {
   position: absolute;
-  left: 14px;
+  left: 17px;
   font-size: 18px;
   color: #64748b;
   pointer-events: none;
@@ -2512,7 +2522,7 @@
   background: transparent;
   border: none;
   outline: none;
-  padding: 0 16px 0 44px;
+  padding: 0 18px 0 46px;
   color: #ffffff;
   font-size: 14px;
   font-family: inherit;
@@ -2524,12 +2534,12 @@
 }
 
 .command-input--pwd {
-  padding-right: 46px;
+  padding-right: 48px;
 }
 
 .command-eye-btn {
   position: absolute;
-  right: 12px;
+  right: 14px;
   background: none;
   border: none;
   color: #64748b;
@@ -2548,7 +2558,7 @@
 .command-submit-btn {
   width: 100%;
   height: 52px;
-  border-radius: 9999px;
+  border-radius: 50px;
   background: linear-gradient(90deg, #0ea5e9 0%, #38bdf8 30%, #8b5cf6 70%, #a855f7 100%);
   border: none;
   color: #ffffff;
@@ -2559,7 +2569,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 32px;
   box-shadow: 
     0 8px 24px -4px rgba(14, 165, 233, 0.45),
     0 8px 24px -4px rgba(168, 85, 247, 0.45);
